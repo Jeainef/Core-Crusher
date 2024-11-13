@@ -6,24 +6,38 @@ using UnityEngine;
 [RequireComponent(typeof(MeshRenderer))]
 public class Chunk : MonoBehaviour
 {
+    [SerializeField] public  int ChunkWidth=12;
+    [SerializeField] public  int ChunkHeight=12;
     [SerializeField] private MeshFilter meshFilter;
     [SerializeField] private MeshRenderer meshRenderer;
 
     List<int> triangles = new List<int>();
     List<Vector3> vertices = new List<Vector3>();
     List<Vector2> uvs = new List<Vector2>();
+
+    VoxelType[,,] chunkBlockData;  //Very inneficient, should refactor later
+
     int vertexIndex=0;
     private Mesh chunkMesh;
 
     private void Start() {
+        chunkBlockData=new VoxelType[ChunkWidth,ChunkHeight,ChunkWidth];
         Initialize();
     }
 
 
     public void Initialize(){
-        for(int x=0;x<VoxelData.ChunkWidth; x++){
-            for(int y=0;y<VoxelData.ChunkHeight; y++){
-                for(int z=0;z<VoxelData.ChunkWidth; z++){
+
+        for(int x=0;x<ChunkWidth; x++){
+            for(int y=0;y<ChunkHeight; y++){
+                for(int z=0;z<ChunkWidth; z++){
+                    chunkBlockData[x,y,z]=VoxelType.Solid;
+                }
+            }
+        }
+        for(int x=0;x<ChunkWidth; x++){
+            for(int y=0;y<ChunkHeight; y++){
+                for(int z=0;z<ChunkWidth; z++){
                     AddVoxelData(new Vector3(x,y,z));
                 }
             }
@@ -33,14 +47,20 @@ public class Chunk : MonoBehaviour
     }
     private void AddVoxelData(Vector3 pos){
         
-        for(int i=0; i<6; i++){
-            for(int j=0; j<6; j++){
-                int triangleIndex = VoxelData.Triangles[i,j];
-                vertices.Add(VoxelData.Vertices[triangleIndex] + pos);
-                triangles.Add(vertexIndex);
+        
 
-                uvs.Add(VoxelData.UVs[j]); //Current triangle Index
-                vertexIndex++;
+        for(int i=0; i<6; i++){
+            Vector3 neighbourPosition= pos+VoxelData.NeighbourVoxelPos[i];
+                if(FaceVisible(neighbourPosition)){
+                    for(int j=0; j<6; j++){
+
+                        int triangleIndex = VoxelData.Triangles[i,j];
+                        vertices.Add(VoxelData.Vertices[triangleIndex] + pos);
+                        triangles.Add(vertexIndex);
+
+                        uvs.Add(VoxelData.UVs[j]); //Current triangle Index
+                        vertexIndex++;
+                    }
                 }
             }
     }
@@ -52,5 +72,23 @@ public class Chunk : MonoBehaviour
             };
             chunkMesh.RecalculateNormals();
             meshFilter.mesh=chunkMesh;
+    }
+    private bool FaceVisible(Vector3 NeighbourVoxelPos){
+        //Face index order is stored in VoxelData
+        if (OutsideChunkBorder(NeighbourVoxelPos)) //Is outside the chunk borders
+        {
+            Debug.Log("its outside");
+            return true;
+        }
+        if(chunkBlockData[(int)NeighbourVoxelPos.x,(int)NeighbourVoxelPos.y,(int)NeighbourVoxelPos.z] != VoxelType.Solid) return true;
+        return false; 
+
+    }
+    private bool OutsideChunkBorder(Vector3 pos){
+
+        if(pos.x<0 || pos.x>=ChunkWidth) return true;
+        if(pos.y<0 || pos.y>=ChunkHeight) return true;
+        if(pos.z<0 || pos.z>=ChunkWidth) return true;
+        else return false;
     }
 }
