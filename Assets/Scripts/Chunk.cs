@@ -28,13 +28,7 @@ public class Chunk : MonoBehaviour
 
     public void Initialize(){
 
-        for(int x=0;x<ChunkWidth; x++){
-            for(int y=0;y<ChunkHeight; y++){
-                for(int z=0;z<ChunkWidth; z++){
-                    chunkBlockData[x,y,z]=VoxelType.Solid;
-                }
-            }
-        }
+        AddChunkVoxelData();
         for(int x=0;x<ChunkWidth; x++){
             for(int y=0;y<ChunkHeight; y++){
                 for(int z=0;z<ChunkWidth; z++){
@@ -51,7 +45,7 @@ public class Chunk : MonoBehaviour
 
         for(int i=0; i<6; i++){
             Vector3 neighbourPosition= pos+VoxelData.NeighbourVoxelPos[i];
-                if(FaceVisible(neighbourPosition)){
+                if(FaceVisible(pos,neighbourPosition)){
                     for(int j=0; j<6; j++){
 
                         int triangleIndex = VoxelData.Triangles[i,j];
@@ -73,7 +67,9 @@ public class Chunk : MonoBehaviour
             chunkMesh.RecalculateNormals();
             meshFilter.mesh=chunkMesh;
     }
-    private bool FaceVisible(Vector3 NeighbourVoxelPos){
+    private bool FaceVisible(Vector3 CurrentVoxelPos,Vector3 NeighbourVoxelPos){
+
+        if(chunkBlockData[(int)CurrentVoxelPos.x,(int)CurrentVoxelPos.y,(int)CurrentVoxelPos.z] == VoxelType.Air) return false;
         //Face index order is stored in VoxelData
         if (OutsideChunkBorder(NeighbourVoxelPos)) //Is outside the chunk borders
         {
@@ -90,5 +86,19 @@ public class Chunk : MonoBehaviour
         if(pos.y<0 || pos.y>=ChunkHeight) return true;
         if(pos.z<0 || pos.z>=ChunkWidth) return true;
         else return false;
+    }
+    private void AddChunkVoxelData(){
+        
+        float radius=10;
+
+        for(int x=0;x<ChunkWidth; x++){
+            for(int y=0;y<ChunkHeight; y++){
+                for(int z=0;z<ChunkWidth; z++){
+                    
+                        chunkBlockData[x,y,z]=VoxelType.Solid;
+                    
+                }
+            }
+        }
     }
 }

@@ -408,6 +408,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b147c4b716312eaebdebf1aa8242f51, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ChunkWidth: 16
+  ChunkHeight: 150
   meshFilter: {fileID: 2084232536}
   meshRenderer: {fileID: 2084232535}
 --- !u!23 &2084232535
