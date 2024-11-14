@@ -17,7 +17,7 @@ public class Chunk : MonoBehaviour
 
     VoxelType[,,] chunkBlockData;  //Very inneficient, should refactor later
 
-    int vertexIndex=0;
+    public int vertexIndex=0;
     private Mesh chunkMesh;
 
     private void Start() {
@@ -46,15 +46,23 @@ public class Chunk : MonoBehaviour
         for(int i=0; i<6; i++){
             Vector3 neighbourPosition= pos+VoxelData.NeighbourVoxelPos[i];
                 if(FaceVisible(pos,neighbourPosition)){
-                    for(int j=0; j<6; j++){
+
+                    //Set Vertices and UVs
+                    for(int j=0; j<4; j++){
 
                         int triangleIndex = VoxelData.Triangles[i,j];
                         vertices.Add(VoxelData.Vertices[triangleIndex] + pos);
-                        triangles.Add(vertexIndex);
-
+             
                         uvs.Add(VoxelData.UVs[j]); //Current triangle Index
-                        vertexIndex++;
+
+                       
                     }
+                    //Set Triangles
+                    for(int tri=0;tri < 6;tri++){
+                        triangles.Add(vertexIndex+VoxelData.TriangleOrder[tri]);
+
+                    }
+                    vertexIndex+=4;
                 }
             }
     }
@@ -89,8 +97,6 @@ public class Chunk : MonoBehaviour
     }
     private void AddChunkVoxelData(){
         
-        float radius=10;
-
         for(int x=0;x<ChunkWidth; x++){
             for(int y=0;y<ChunkHeight; y++){
                 for(int z=0;z<ChunkWidth; z++){

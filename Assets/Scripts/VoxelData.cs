@@ -39,18 +39,22 @@ public static class VoxelData
         new Vector3(-1.0f,0.0f,0.0f), //Left Voxel
         new Vector3(1.0f,0.0f,0.0f) //Right Voxel
     };
-    public static readonly int[,] Triangles = new int[6,6]{
-          {0, 3, 1, 1, 3, 2}, // Back Face
 
-         {5, 6, 4, 4, 6, 7}, // Front Face
+    public static readonly int[] TriangleOrder= new int[6]{
+        0,1,2,2,1,3
+    };
+    public static readonly int[,] Triangles = new int[6,4]{
+          {0, 3, 1, 2}, // Back Face
 
-         {3, 7, 2, 2, 7, 6}, // Top Face
+         {5, 6, 4, 7}, // Front Face
 
-         {1, 5, 0, 0, 5, 4}, // Bottom Face
+         {3, 7, 2, 6}, // Top Face
 
-         {4, 7, 0, 0, 7, 3}, // Left Face
+         {1, 5, 0, 4}, // Bottom Face
 
-         {1, 2, 5, 5, 2, 6}  // Right Face
+         {4, 7, 0, 3}, // Left Face
+
+         {1, 2, 5, 6}  // Right Face
 
     };
 

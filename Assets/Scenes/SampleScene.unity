@@ -409,9 +409,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ChunkWidth: 16
-  ChunkHeight: 150
+  ChunkHeight: 15
   meshFilter: {fileID: 2084232536}
   meshRenderer: {fileID: 2084232535}
+  vertexIndex: 0
 --- !u!23 &2084232535
 MeshRenderer:
   m_ObjectHideFlags: 0
