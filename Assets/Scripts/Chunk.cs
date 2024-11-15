@@ -34,8 +34,9 @@ public class Chunk
 
     ChunkCoords ChunkPosition;
     World world;
-    public Chunk(ChunkCoords position,World world){
+    public Chunk(ChunkCoords position,World _world){
         ChunkPosition=position;
+        world=_world;
 
         ChunkObject = new GameObject();
         ChunkObject.transform.position=ChunkPosition.ToWorldCoordinates();
@@ -43,7 +44,7 @@ public class Chunk
         meshFilter= ChunkObject.AddComponent<MeshFilter>();
         meshRenderer= ChunkObject.AddComponent<MeshRenderer>();
         meshRenderer.material=world.material;
-        chunkBlockData=new VoxelType[VoxelData.ChunkWidth,VoxelData.ChunkHeight,VoxelData.ChunkWidth];
+        chunkBlockData=new VoxelType[world.ChunkWidth,world.ChunkHeight,world.ChunkWidth];
 
 
         Initialize();
@@ -52,9 +53,9 @@ public class Chunk
     public void Initialize(){
 
         AddChunkVoxelData();
-        for(int x=0;x<VoxelData.ChunkWidth; x++){
-            for(int y=0;y<VoxelData.ChunkHeight; y++){
-                for(int z=0;z<VoxelData.ChunkWidth; z++){
+        for(int x=0;x<world.ChunkWidth; x++){
+            for(int y=0;y<world.ChunkHeight; y++){
+                for(int z=0;z<world.ChunkWidth; z++){
                     AddVoxelData(new Vector3(x,y,z));
                 }
             }
@@ -105,7 +106,11 @@ public class Chunk
         if (OutsideChunkBorder(NeighbourVoxelPos)) //Is outside the chunk borders
         {
             Debug.Log("its outside");
-            return true;
+            if(NeighbourVoxelPos.y<0 || NeighbourVoxelPos.y>world.ChunkHeight-1) return true;
+
+            if(world.GetVoxelType(NeighbourVoxelPos)!= VoxelType.Solid) return true;
+            
+            return false;
         }
         if(chunkBlockData[(int)NeighbourVoxelPos.x,(int)NeighbourVoxelPos.y,(int)NeighbourVoxelPos.z] != VoxelType.Solid) return true;
         return false; 
@@ -113,21 +118,26 @@ public class Chunk
     }
     private bool OutsideChunkBorder(Vector3 pos){
 
-        if(pos.x<0 || pos.x>=VoxelData.ChunkWidth) return true;
-        if(pos.y<0 || pos.y>=VoxelData.ChunkHeight) return true;
-        if(pos.z<0 || pos.z>=VoxelData.ChunkWidth) return true;
+        if(pos.x<0 || pos.x>=world.ChunkWidth) return true;
+        if(pos.y<0 || pos.y>=world.ChunkHeight) return true;
+        if(pos.z<0 || pos.z>=world.ChunkWidth) return true;
         else return false;
     }
     private void AddChunkVoxelData(){
         
-        for(int x=0;x<VoxelData.ChunkWidth; x++){
-            for(int y=0;y<VoxelData.ChunkHeight; y++){
-                for(int z=0;z<VoxelData.ChunkWidth; z++){
+        for(int x=0;x<world.ChunkWidth; x++){
+            for(int y=0;y<world.ChunkHeight; y++){
+                for(int z=0;z<world.ChunkWidth; z++){
                     
-                        chunkBlockData[x,y,z]=VoxelType.Solid;
+                    chunkBlockData[x,y,z]=world.GetVoxelType(VoxelToWorldPos(new Vector3(x,y,z)));
                     
                 }
             }
         }
     }
+
+    private Vector3 VoxelToWorldPos(Vector3 voxelPos){
+        return new Vector3(voxelPos.x*ChunkPosition.x*world.ChunkWidth,voxelPos.y,ChunkPosition.x*voxelPos.z*world.ChunkWidth);
+    }
+
 }

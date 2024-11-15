@@ -9,8 +9,6 @@ public enum VoxelType{
 public static class VoxelData
 {
 
-    public static readonly int ChunkWidth=12;
-    public static readonly int ChunkHeight=12;
 
     public static readonly Vector3[] Vertices = new Vector3[8]{
         new Vector3(0.0f,0.0f,0.0f),
