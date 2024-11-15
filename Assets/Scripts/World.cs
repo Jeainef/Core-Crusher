@@ -26,12 +26,13 @@ public class World : MonoBehaviour
     public VoxelType  GetVoxelType( Vector3 voxelPosition){
         Debug.Log(voxelPosition);
         if(!IsVoxelInWorld(voxelPosition)) return VoxelType.Air;
+        if(voxelPosition.y>ChunkHeight-1 || voxelPosition.y<0) return VoxelType.Air;
         return VoxelType.Solid;
     }
     public bool IsChunkInWorld(ChunkCoords pos){
         return (pos.x>0 && pos.x<ChunkRenderDistance && pos.y>0 && pos.y<ChunkRenderDistance );
     }
     public bool IsVoxelInWorld(Vector3 pos){
-        return (pos.x>0 && pos.x<ChunkRenderDistance*ChunkWidth-1 && pos.z>0 && pos.z<ChunkRenderDistance*ChunkWidth-1);
+        return (pos.x>=0 && pos.x<ChunkRenderDistance*ChunkWidth && pos.z>=0 && pos.z<ChunkRenderDistance*ChunkWidth);
     }
 }
