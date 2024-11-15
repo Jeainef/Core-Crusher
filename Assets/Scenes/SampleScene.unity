@@ -421,6 +421,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df4d8a6797c6b29a9a00d6c52fc0f2b1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ChunkRenderDistance: 6
+  ChunkWidth: 12
   material: {fileID: 2100000, guid: 4d6a83cf81a0e48809b4b8406694a722, type: 2}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
