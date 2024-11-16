@@ -25,7 +25,7 @@ public class Chunk
     List<Vector3> vertices = new List<Vector3>();
     List<Vector2> uvs = new List<Vector2>();
 
-    VoxelType[,,] chunkBlockData;  //Very inneficient, should refactor later
+    BlockData[,,] chunkBlockData;  //Very inneficient, should refactor later
 
     public int vertexIndex=0;
     private Mesh chunkMesh;
@@ -43,7 +43,8 @@ public class Chunk
         meshFilter= ChunkObject.AddComponent<MeshFilter>();
         meshRenderer= ChunkObject.AddComponent<MeshRenderer>();
         meshRenderer.material=world.material;
-        chunkBlockData=new VoxelType[world.ChunkWidth,world.ChunkHeight,world.ChunkWidth];
+        
+        chunkBlockData=new BlockData[world.ChunkWidth,world.ChunkHeight,world.ChunkWidth];
 
 
         Initialize();
@@ -99,8 +100,8 @@ public class Chunk
             meshFilter.mesh=chunkMesh;
     }
     private bool FaceVisible(Vector3 CurrentVoxelPos,Vector3 NeighbourVoxelPos){
-        if(CheckVoxel(CurrentVoxelPos)==VoxelType.Air) return false;
-        if(CheckVoxel(NeighbourVoxelPos)==VoxelType.Air) return true;
+        if(!CheckVoxel(CurrentVoxelPos).isSolid) return false;
+        if(!CheckVoxel(NeighbourVoxelPos).isSolid) return true;
         return false;
 
     }
@@ -117,15 +118,15 @@ public class Chunk
             for(int y=0;y<world.ChunkHeight; y++){
                 for(int z=0;z<world.ChunkWidth; z++){
                     
-                    chunkBlockData[x,y,z]=world.GetVoxelType(VoxelToWorldPos(new Vector3(x,y,z)));
-                    
+                   // chunkBlockData[x,y,z]=world.GetVoxelType(VoxelToWorldPos(new Vector3(x,y,z)));
+                    chunkBlockData[x,y,z]= world.blocks[world.GetVoxelType(VoxelToWorldPos(new Vector3(x,y,z)))];
                 }
             }
         }
     }
-    private VoxelType CheckVoxel(Vector3 pos){
+    private BlockData CheckVoxel(Vector3 pos){
         if(!OutsideChunkBorder(pos)) return chunkBlockData[(int)pos.x,(int)pos.y,(int)pos.z];
-        return world.GetVoxelType(VoxelToWorldPos(pos));
+        return world.blocks[world.GetVoxelType(VoxelToWorldPos(pos))];
     }
     private Vector3 VoxelToWorldPos(Vector3 voxelPos){
         return voxelPos + ChunkObject.transform.position;
