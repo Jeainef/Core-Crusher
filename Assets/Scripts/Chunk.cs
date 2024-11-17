@@ -12,7 +12,15 @@ public class ChunkCoords{
         x=_x;
         y=_y;
     }
-
+    public bool Equals(ChunkCoords other)
+    {
+        if(other==null) return false;
+        else if(x==other.x && y==other.y) return true;
+        else return false;
+    }
+    public string Code{
+        get{return x + "_" + y;}
+    }
 }
 public class Chunk 
 {
@@ -29,6 +37,7 @@ public class Chunk
 
     public int vertexIndex=0;
     private Mesh chunkMesh;
+    //public bool isActive;
 
     ChunkCoords ChunkPosition;
     World world;
@@ -51,7 +60,6 @@ public class Chunk
     }
 
     public void Initialize(){
-
         AddChunkVoxelData();
         for(int x=0;x<world.ChunkWidth; x++){
             for(int y=0;y<world.ChunkHeight; y++){
@@ -134,4 +142,13 @@ public class Chunk
     private Vector3 ChunkToWorldPos(){
         return new Vector3(ChunkPosition.x*world.ChunkWidth,0,ChunkPosition.y*world.ChunkWidth);
     }
+    public bool IsActive{
+        get{
+            return ChunkObject.activeSelf;}
+        set{ChunkObject.SetActive(value);}
+    }
+
+
+    
+
 }
