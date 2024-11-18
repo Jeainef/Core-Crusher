@@ -9,7 +9,7 @@ public class World : MonoBehaviour
     [SerializeField] private int ChunkRenderDistance;
      [SerializeField] private int ChunkWorldSize;
     [SerializeField] public int ChunkWidth=12;
-    [SerializeField] public readonly int ChunkHeight=12;
+    [SerializeField] public readonly int ChunkHeight=16;
     [SerializeField] private Texture2D terrainTexture;
     [SerializeField] public BlockData[] blocks;
     private Dictionary<string,Chunk> chunks_saved=new Dictionary<string,Chunk> ();
@@ -24,7 +24,7 @@ public class World : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        if(terrainTexture==null) terrainTexture= NoiseGenerator.BasicNoise(1028,1028);
+        if(terrainTexture==null) terrainTexture= NoiseGenerator.BasicNoise(128,128);
 
 
         playerPosition.position=spawnPoint;
@@ -92,9 +92,9 @@ public class World : MonoBehaviour
         }
     }
     public byte  GetVoxelType( Vector3 voxelPosition){
-
+        float textureHeight = terrainTexture.GetPixel((int)voxelPosition.x % 128, (int)voxelPosition.z % 128).r * 3;
         if(!IsVoxelInWorld(voxelPosition)) return 0;
-        if(voxelPosition.y>ChunkHeight-1 || voxelPosition.y<0) return 0;
+        if(voxelPosition.y>ChunkHeight-textureHeight-5 || voxelPosition.y<0) return 0;
         return 1;
     }
 
