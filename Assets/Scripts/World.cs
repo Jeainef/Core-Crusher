@@ -10,9 +10,12 @@ public class World : MonoBehaviour
      [SerializeField] private int ChunkWorldSize;
     [SerializeField] public int ChunkWidth=12;
     [SerializeField] public readonly int ChunkHeight=12;
+    [SerializeField] private Texture2D terrainTexture;
     [SerializeField] public BlockData[] blocks;
     private Dictionary<string,Chunk> chunks_saved=new Dictionary<string,Chunk> ();
     private List<ChunkCoords> activeChunks= new List<ChunkCoords> ();
+
+  
     public Material material;
 
 
@@ -21,6 +24,9 @@ public class World : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        if(terrainTexture==null) terrainTexture= NoiseGenerator.BasicNoise(1028,1028);
+
+
         playerPosition.position=spawnPoint;
         PlayerCurrentChunk=ChunkCoordFromWorldPos(playerPosition.position);
         GenerateWorld();
